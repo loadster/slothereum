@@ -11,7 +11,7 @@ $ npm install
 To run the server:
 
 ```
-$ npm run
+$ npm start
 ```
 
 To open it in your browser, go to http://localhost:3000.
