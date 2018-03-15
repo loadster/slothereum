@@ -1,0 +1,296 @@
+<html>
+<head>
+    <title>Slothereum Crypto Exchange</title>
+    <meta name="viewport" content="width=device-width"/>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <link rel="stylesheet" href="/css/main.css"/>
+</head>
+<body>
+<div id="app">
+    <router-link to="/"><img id="logo" src="/images/logo.png"/></router-link>
+    <div id="content">
+        <router-view></router-view>
+    </div>
+</div>
+
+<!-- The home component -->
+<script type="text/x-template" id="home-component">
+    <div id="home">
+        <p>
+            Introducing Slothereum: the self-regulated, community-driven cryptocurrency!
+        </p>
+
+        <h2>-- Slothereum Manifesto --</h2>
+        <p>
+            <strong>Universal Basic Income?</strong>
+            Hell yeah! All owners of Slothereum get a new coin each day, just for participating in the New Economy.
+        </p>
+
+        <p>
+            <strong>Public Ledger?</strong>
+            We'll do you one better! The Slothereum network is completely open and self-regulated, outside the
+            rich of greedy governments and "The Man".
+        </p>
+
+        <p>
+            <strong>No Transaction Fees!</strong>
+            It shouldn't cost money to exchange money. That's why the Slothereum Exchange charges no processing fees.
+        </p>
+
+        <div class="buttons">
+            <router-link to="/registration" tag="button">Get Started</router-link>
+            <router-link to="/login" tag="button">Sign In</router-link>
+        </div>
+    </div>
+</script>
+<script type="text/javascript">
+
+    var HomeComponent = {
+        template: '#home-component'
+    };
+
+</script>
+
+
+<!-- The registration component -->
+<script type="text/x-template" id="registration-component">
+    <div id="registration">
+        <div class="message">{{ message }}</div>
+        <label for="registration-username">Email</label>
+        <form>
+            <div>
+                <input id="registration-username" name="username" v-model="username"/>
+            </div>
+            <label for="registration-password">Password</label>
+            <div>
+                <input id="registration-password" name="password" type="password" v-model="password"/>
+            </div>
+            <div>
+                <input type="button" value="Register" v-on:click="submit"/>
+            </div>
+        </form>
+    </div>
+</script>
+<script type="text/javascript">
+
+    var RegistrationComponent = {
+        template: '#registration-component',
+        data: function () {
+            return {
+                username: "",
+                password: "",
+                message: "Create your Slothereum wallet and claim your 100 founder-class coins!"
+            };
+        },
+        methods: {
+            submit: function () {
+
+            }
+        }
+    };
+
+</script>
+
+<!-- The login component -->
+<script type="text/x-template" id="login-component">
+    <div id="login">
+        <div class="message">{{ message }}</div>
+        <label for="login-username">Email</label>
+        <form>
+            <div>
+                <input id="login-username" name="username" v-model="username"/>
+            </div>
+            <label for="login-password">Password</label>
+            <div>
+                <input id="login-password" name="password" type="password" v-model="password"/>
+            </div>
+            <div>
+                <input type="button" value="Sign In" v-on:click="submit"/>
+            </div>
+        </form>
+    </div>
+</script>
+<script type="text/javascript">
+
+    var LoginComponent = {
+        template: '#login-component',
+        data: function () {
+            return {
+                username: "",
+                password: "",
+                message: "Please sign in to access your Slothereum wallet."
+            };
+        },
+        methods: {
+            submit: function () {
+                var me = this;
+
+                axios.post('/api/login', {
+                    username: this.username,
+                    password: this.password
+                }).then(function (response) {
+                    sessionStorage.setItem('token', response.data.token);
+
+                    me.$router.push({ path: '/wallets' });
+                }).catch(function () {
+                    me.password = "";
+                    me.message = "Oops! Please try again.";
+                });
+
+                return false;
+            }
+        }
+    };
+
+</script>
+
+<!-- The wallets component -->
+<script type="text/x-template" id="wallets-component">
+    <div id="wallets">
+        <h2>My Wallets</h2>
+        <div class="wallet" v-for="wallet in wallets" v-if="wallets">
+            <div class="balance">
+                {{ wallet.balance.toFixed(2) }}
+            </div>
+            <div class="address">
+                {{ wallet.address }}
+            </div>
+        </div>
+        <div class="transfer">
+            <h2>Transfer Currency</h2>
+            <label for="amount">Amount</label>
+            <div>
+                <input id="amount" name="amount" type="number" min="0.01" max="1000000" class="transfer-amount"/>
+            </div>
+            <label for="source">Source Address</label>
+            <div>
+                <select id="source" name="source" class="transfer-source">
+                    <option v-for="wallet in wallets">{{ wallet.address }}</option>
+                </select>
+            </div>
+            <label for="destination">Destination Address</label>
+            <div>
+                <select id="destination" name="destination" class="transfer-destination">
+                    <option v-for="wallet in wallets">{{ wallet.address }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="footer">
+            <router-link to="/logout">Sign Out</router-link>
+        </div>
+    </div>
+</script>
+<script type="text/javascript">
+
+    var WalletsComponent = {
+        template: '#wallets-component',
+        data: function () {
+            return {
+                loading: false,
+                wallets: []
+            }
+        },
+        created: function () {
+            this.loadData();
+        },
+        methods: {
+            loadData: function () {
+                var me = this;
+
+                me.loading = true;
+
+                axios.get('/api/wallets/mine', {
+                    auth: {
+                        password: sessionStorage.getItem('token')
+                    }
+                }).then(function (response) {
+                    me.wallets = response.data;
+                    me.loading = false;
+                });
+            }
+        }
+    };
+
+</script>
+
+<!-- The logout component -->
+<script type="text/x-template" id="logout-component">
+</script>
+<script type="text/javascript">
+
+    var LogoutComponent = {
+        template: '#logout-component',
+        created: function () {
+            sessionStorage.removeItem('token');
+
+            this.$router.push({ path: '/' });
+        }
+    };
+
+</script>
+
+<!-- The main Vue block -->
+<script type="text/javascript">
+
+    var app = new Vue({
+        el: '#app',
+        router: new VueRouter({
+            routes: [
+                {
+                    path: '/', component: HomeComponent
+                },
+                {
+                    path: '/registration', component: RegistrationComponent
+                },
+                {
+                    path: '/login', component: LoginComponent
+                },
+                {
+                    path: '/logout', component: LogoutComponent
+                },
+                {
+                    path: '/wallets', component: WalletsComponent
+                }
+            ]
+        }),
+        data: {
+            wallets: [],
+            token: null
+        },
+        methods: {
+            init: () => {
+                var token = sessionStorage.getItem('token');
+
+                if (token) {
+                    app.token = token;
+                    app.refreshWallets();
+                } else {
+                    app.token = null;
+                    app.wallets = [];
+                }
+            },
+            loggedIn: (token) => {
+                console.log("logged in: " + token);
+                sessionStorage.setItem('token', token);
+
+                app.init();
+            },
+            handleLogout: () => {
+                app.token = null;
+                app.wallets = [];
+                app.error = null;
+
+                sessionStorage.removeItem('token');
+            },
+            refreshWallets: () => {
+            }
+        }
+    });
+
+    app.init();
+
+</script>
+</body>
+</html>

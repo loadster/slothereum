@@ -1,0 +1,25 @@
+{
+  "name": "slothereum",
+  "version": "1.0.0",
+  "description": "Slothereum Crypto Exchange",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "demo",
+    "crypto",
+    "cryptocurrency"
+  ],
+  "author": "Andy Hawkes <andy@andyhawkes.com>",
+  "license": "MIT",
+  "dependencies": {
+    "basic-auth": "^2.0.0",
+    "koa": "^2.5.0",
+    "koa-body": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "randomstring": "^1.1.5"
+  }
+}
