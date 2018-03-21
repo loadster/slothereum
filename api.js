@@ -28,6 +28,45 @@ module.exports = (app, data) => {
             await next();
         }
     });
+    /* 
+       POST /api/registration 
+     */
+    router.post('/api/registration', async ctx => {
+        let username=ctx.request.body.username;
+        let password=ctx.request.body.username;
+        
+        //CHECK IF FALSE
+        if(!username || !password){
+            ctx.throw(400);
+        }
+        
+        // CHECK IF NOT FALSE BUT TAKEN
+        else if(data.users.find(x => x.username===username)){
+            console.log(`User ${username} already exists`);
+            ctx.throw(409);
+        }
+
+        // ADD USER, GIVE WALLET, GIVE TOKEN?
+        else {
+            
+            data.users.push({
+                id:data.users.length+1,
+                username:username,
+                password:password,
+                wallets:[]
+            })
+            ctx.body = {
+                token: data.getOrCreateAccessToken(user.id),
+                username: user.username,
+                wallets: user.wallets
+            };
+
+            // => TAKE THEM TO THEIR WALLET PAGE =>
+        }
+        
+    });
+
+
 
     /**
      * POST /api/login

@@ -87,7 +87,12 @@
         },
         methods: {
             submit: function () {
-
+                
+                //console.log(this.username,this.password);
+                axios.post('/api/registration',{
+                    username: this.username,
+                    password: this.password
+                }).then(function (response) {}).catch(function () {});
             }
         }
     };
