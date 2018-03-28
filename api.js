@@ -8,9 +8,32 @@ module.exports = (app, data) => {
      * Authenticate API requests.
      */
     app.use(async (ctx, next) => {
+        if (ctx.path.startsWith("/api") && !ctx.path.startsWith("/api/registration")) {
+            
+            let credentials = BasicAuth(ctx.req);
+            
+            if (credentials && credentials.pass) {
+                let user = data.getUserForAccessToken(credentials.pass);
+
+                if (user) {
+                    ctx.user = user;
+
+                    await next();
+                } else {
+                    ctx.throw(401);
+                }
+            } else {
+                ctx.throw(401);
+            }
+        } else {
+            await next();
+        }
+        
+
+        /**========*/
         if (ctx.path.startsWith("/api") && !ctx.path.startsWith("/api/login")) {
             let credentials = BasicAuth(ctx.req);
-
+            
             if (credentials && credentials.pass) {
                 let user = data.getUserForAccessToken(credentials.pass);
 
@@ -60,7 +83,7 @@ module.exports = (app, data) => {
                 username: user.username,
                 wallets: user.wallets
             };
-
+            console.log(`Welcome ${username}`);
             // => TAKE THEM TO THEIR WALLET PAGE =>
         }
         
