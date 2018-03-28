@@ -8,30 +8,10 @@ module.exports = (app, data) => {
      * Authenticate API requests.
      */
     app.use(async (ctx, next) => {
-        if (ctx.path.startsWith("/api") && !ctx.path.startsWith("/api/registration")) {
-            
-            let credentials = BasicAuth(ctx.req);
-            
-            if (credentials && credentials.pass) {
-                let user = data.getUserForAccessToken(credentials.pass);
-
-                if (user) {
-                    ctx.user = user;
-
-                    await next();
-                } else {
-                    ctx.throw(401);
-                }
-            } else {
-                ctx.throw(401);
-            }
-        } else {
-            await next();
-        }
         
-
-        /**========*/
-        if (ctx.path.startsWith("/api") && !ctx.path.startsWith("/api/login")) {
+        if (ctx.path.startsWith("/api") && 
+        !ctx.path.startsWith("/api/login") &&
+        !ctx.path.startsWith("/api/registration")) {
             let credentials = BasicAuth(ctx.req);
             
             if (credentials && credentials.pass) {
@@ -76,7 +56,7 @@ module.exports = (app, data) => {
                 id:data.users.length+1,
                 username:username,
                 password:password,
-                wallets:[]
+                wallets:[data.createNewWallet()]
             })
             ctx.body = {
                 token: data.getOrCreateAccessToken(user.id),
