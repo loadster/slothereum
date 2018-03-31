@@ -36,7 +36,7 @@ module.exports = (app, data) => {
      */
     router.post('/api/registration', async ctx => {
         let username=ctx.request.body.username;
-        let password=ctx.request.body.username;
+        let password=ctx.request.body.password;
         
         //CHECK IF FALSE
         if(!username || !password){
@@ -51,13 +51,13 @@ module.exports = (app, data) => {
 
         // ADD USER, GIVE WALLET, GIVE TOKEN?
         else {
-            
-            data.users.push({
+            let user = {
                 id:data.users.length+1,
                 username:username,
                 password:password,
                 wallets:[data.createNewWallet()]
-            })
+            };
+            data.users.push(user);
             ctx.body = {
                 token: data.getOrCreateAccessToken(user.id),
                 username: user.username,
