@@ -1,4 +1,4 @@
-<!-- COMMENT TO PRACTICE PUSHING TO MY BRANCH ON GH-->
+
 <html>
 <head>
     <title>Slothereum Crypto Exchange</title>
@@ -95,7 +95,9 @@
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
                     me.$router.push({ path: '/wallets' });
-                }).catch(function () {});
+                }).catch(function () {
+                    me.message="Sorry, an error has occured... Please try again";
+                });
             }
         }
     };

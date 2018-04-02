@@ -38,18 +38,20 @@ module.exports = (app, data) => {
         let username=ctx.request.body.username;
         let password=ctx.request.body.password;
         
-        //CHECK IF FALSE
+        
         if(!username || !password){
+            console.log(`Invalid Username or Password`);
             ctx.throw(400);
+            
         }
         
-        // CHECK IF NOT FALSE BUT TAKEN
+        
         else if(data.users.find(x => x.username===username)){
             console.log(`User ${username} already exists`);
             ctx.throw(409);
         }
 
-        // ADD USER, GIVE WALLET, GIVE TOKEN?
+        
         else {
             let user = {
                 id:data.users.length+1,
@@ -64,7 +66,7 @@ module.exports = (app, data) => {
                 wallets: user.wallets
             };
             console.log(`Welcome ${username}`);
-            // => TAKE THEM TO THEIR WALLET PAGE =>
+            
         }
         
     });

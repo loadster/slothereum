@@ -37,21 +37,15 @@ const data = {
     ]
 };
 data.createNewWallet = () => {
-    newAdd = () => {
-        return newWallet=Math.random().toString(16).substring(9);
+    generateRandomWalletId = () => {
+        return Math.random().toString(16).substring(9);
     }
      
-    check = (address) => {
-        flag=false;
-        data.wallets.forEach(function(el){
-            if(address===el.address){
-                flag=true;
-            }
-        });
-        return flag;
-    }
-    let x = newAdd();
-    if(!check(x)) {
+    checkIfWalletIdIsTaken = (address) => {
+        return data.wallets.find(wallet => wallet.address===address);
+        }
+    let x = generateRandomWalletId();
+    if(!checkIfWalletIdIsTaken(x)) {
         return x;
     } else {
         data.createNewWallet();
