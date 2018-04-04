@@ -60,6 +60,8 @@ module.exports = (app, data) => {
                 wallets:[data.createNewWallet()]
             };
             data.users.push(user);
+            let wallet={address:user.wallets[0],balance:10};
+            data.wallets.push(wallet);
             ctx.body = {
                 token: data.getOrCreateAccessToken(user.id),
                 username: user.username,

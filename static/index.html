@@ -94,6 +94,7 @@
                     password: this.password
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
+                    
                     me.$router.push({ path: '/wallets' });
                 }).catch(function () {
                     me.message="Sorry, an error has occured... Please try again";
@@ -143,6 +144,7 @@
                     password: this.password
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
+                    
 
                     me.$router.push({ path: '/wallets' });
                 }).catch(function () {
@@ -296,6 +298,16 @@
                 sessionStorage.removeItem('token');
             },
             refreshWallets: () => {
+                var me = this;
+
+                axios.get('/api/wallets/mine', {
+                    auth: {
+                        password: sessionStorage.getItem('token')
+                    }
+                }).then(function (response) {
+                    me.wallets = response.data;
+                    
+                });
             }
         }
     });
