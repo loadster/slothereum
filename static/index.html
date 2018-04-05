@@ -116,7 +116,7 @@
             </div>
             <label for="login-password">Password</label>
             <div>
-                <input id="login-password" name="password" type="password" v-model="password"/>
+                <input id="login-password" name="password" type="password" v-model="password" v-on:keyup.13="submit"/>
             </div>
             <div>
                 <input type="button" value="Sign In" v-on:click="submit"/>
@@ -186,7 +186,9 @@
             <label for="destination">Destination Address</label>
             <div>
                 <select id="destination" name="destination" class="transfer-destination">
-                    <option v-for="wallet in wallets">{{ wallet.address }}</option>
+                    <!-- -->
+                    <option v-for="wallet in network" v-if="wallet.address!=wallets[0].address">{{ wallet.address }}</option>
+                    <!-- -->
                 </select>
             </div>
         </div>
@@ -202,7 +204,10 @@
         data: function () {
             return {
                 loading: false,
-                wallets: []
+                wallets: [],
+                /**/
+                network: []
+                /**/
             }
         },
         created: function () {
@@ -222,7 +227,24 @@
                     me.wallets = response.data;
                     me.loading = false;
                 });
+                /**/
+                axios.get('/api/wallets',{
+                    auth: {
+                        password: sessionStorage.getItem('token')
+                    }
+                }).then(function(response){
+                    
+                    me.network=response.data;
+                    
+                });
+                
+                
+                
+            },
+            filtered: function (arrayOfObjects) {
+                
             }
+            /**/
         }
     };
 
