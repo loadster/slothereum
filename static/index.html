@@ -187,9 +187,12 @@
             <div>
                 <select id="destination" name="destination" class="transfer-destination">
                     <!-- -->
-                    <option v-for="wallet in network" v-if="wallet.address!=wallets[0].address">{{ wallet.address }}</option>
-                    <!-- -->
+                    <option v-for="wallet in network">{{ wallet.address }}</option>
+                    <!-- v-if="wallet.address!=wallets[0].address" -->
                 </select>
+            </div>
+            <div>
+                <input type="button" value="Transfer" v-on:click="confirmTransfer"/>
             </div>
         </div>
         <div class="footer">
@@ -229,20 +232,37 @@
                 });
                 /**/
                 axios.get('/api/wallets',{
+                    
                     auth: {
                         password: sessionStorage.getItem('token')
                     }
+                    
                 }).then(function(response){
                     
-                    me.network=response.data;
+                    me.network = response.data.filter(function (w) {
+                    return !me.wallets.find(function (myWallet) {
+                        myWallet.address === w.address;
+                            });
+                    });
+                    
+                    
                     
                 });
                 
                 
                 
             },
-            filtered: function (arrayOfObjects) {
-                
+            confirmTransfer: function () {
+                var me = this;
+                axios.post('/api/transactions', {
+                    auth: {
+                        password:sessionStorage.getItem('token')
+                    }
+                    
+                        
+                }).then(function (response) {
+                    
+                });
             }
             /**/
         }
