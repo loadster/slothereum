@@ -254,14 +254,22 @@
             },
             confirmTransfer: function () {
                 var me = this;
-                axios.post('/api/transactions', {
-                    auth: {
-                        password:sessionStorage.getItem('token')
-                    }
+                let sources = document.getElementById("source");
+                let currentSource = sources.options[sources.selectedIndex].value;
+                let destinations = document.getElementById("destination");
+                let currentDestination = destinations.options[destinations.selectedIndex].value;
+                console.log(currentSource,currentDestination)
+                
+                axios.post('/api/transactions', 
+                    {source:currentSource,destination:currentDestination}, 
+                    {
+                        auth: {
+                            password:sessionStorage.getItem('token')
+                        }
                     
                         
                 }).then(function (response) {
-                    
+                    console.log(response);
                 });
             }
             /**/
