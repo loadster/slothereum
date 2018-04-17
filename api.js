@@ -145,7 +145,8 @@ module.exports = (app, data) => {
         let transaction = ctx.request.body;
         let sourceWallet = data.getWalletByAddress(transaction.source);
         let destinationWallet = data.getWalletByAddress(transaction.destination);
-        let amount = transaction.amount;
+        let amount = Number(transaction.amount);
+        
 
         if (!sourceWallet) {
             ctx.throw(400, "Source address is invalid!");
@@ -158,7 +159,7 @@ module.exports = (app, data) => {
         } else if (amount <= 0 || amount > 1000000) {
             ctx.throw(400, "Amount is outside the acceptable range!");
         } else {
-            ctx.body = await data.processTransaction(transaction.source, transaction.destination, transaction.amount);
+            ctx.body = await data.processTransaction(transaction.source, transaction.destination, Number(transaction.amount));
         }
     });
 

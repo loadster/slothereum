@@ -175,24 +175,26 @@
             <h2>Transfer Currency</h2>
             <label for="amount">Amount</label>
             <div>
-                <input id="amount" name="amount" type="number" min="0.01" max="1000000" class="transfer-amount"/>
+                <input id="amount" name="amount" type="number" 
+                min="0.01" max="1000000" class="transfer-amount" v-model="amount"/>
             </div>
             <label for="source">Source Address</label>
             <div>
-                <select id="source" name="source" class="transfer-source">
+                <select id="source" name="source" class="transfer-source" 
+                v-model="sourceSelected">
                     <option v-for="wallet in wallets">{{ wallet.address }}</option>
                 </select>
             </div>
             <label for="destination">Destination Address</label>
             <div>
-                <select id="destination" name="destination" class="transfer-destination">
+                <select id="destination" name="destination" class="transfer-destination" v-model="destinationSelected">
                     <!-- -->
                     <option v-for="wallet in network">{{ wallet.address }}</option>
                     <!-- v-if="wallet.address!=wallets[0].address" -->
                 </select>
             </div>
             <div>
-                <input type="button" value="Transfer" v-on:click="confirmTransfer"/>
+                <input type="button" value="Transfer" v-on:click="confirmTransfer" v-model="transferButton"/>
             </div>
         </div>
         <div class="footer">
@@ -209,7 +211,12 @@
                 loading: false,
                 wallets: [],
                 /**/
-                network: []
+                network: [],
+                sourceSelected: '',
+                destinationSelected: '',
+                amount: 0,
+                transferButton:"Transfer"
+
                 /**/
             }
         },
@@ -254,14 +261,17 @@
             },
             confirmTransfer: function () {
                 var me = this;
-                let sources = document.getElementById("source");
-                let currentSource = sources.options[sources.selectedIndex].value;
-                let destinations = document.getElementById("destination");
-                let currentDestination = destinations.options[destinations.selectedIndex].value;
-                console.log(currentSource,currentDestination)
+                source = this.sourceSelected;
+                destination = this.destinationSelected;
+                amount = this.amount;
+                
+                
+
+                
+                
                 
                 axios.post('/api/transactions', 
-                    {source:currentSource,destination:currentDestination}, 
+                    {source:source,destination:destination,amount:amount}, 
                     {
                         auth: {
                             password:sessionStorage.getItem('token')
@@ -269,8 +279,11 @@
                     
                         
                 }).then(function (response) {
-                    console.log(response);
+                    
                 });
+                this.loadData();
+                this.transferButton="Transferred!";
+                setTimeout(() => {this.transferButton="Transfer"; this.loadData(); },2000);
             }
             /**/
         }
