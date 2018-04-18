@@ -279,11 +279,11 @@
                     
                         
                 }).then(function (response) {
-                    
+                    this.loadData();
+                    this.transferButton="Transferred!";
+                    setTimeout(() => {this.transferButton="Transfer"; this.loadData(); },2000);    
                 });
-                this.loadData();
-                this.transferButton="Transferred!";
-                setTimeout(() => {this.transferButton="Transfer"; this.loadData(); },2000);
+                
             }
             /**/
         }
