@@ -190,7 +190,7 @@
                 <select id="destination" name="destination" class="transfer-destination" v-model="destinationSelected">
                     <!-- -->
                     <option v-for="wallet in network">{{ wallet.address }}</option>
-                    <!-- v-if="wallet.address!=wallets[0].address" -->
+                    <!-- -->
                 </select>
             </div>
             <div>
@@ -248,7 +248,7 @@
                     
                     me.network = response.data.filter(function (w) {
                     return !me.wallets.find(function (myWallet) {
-                        myWallet.address === w.address;
+                        return myWallet.address === w.address;
                             });
                     });
                     
