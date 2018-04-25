@@ -88,13 +88,13 @@
         methods: {
             submit: function () {
                 let me =this;
-                
+
                 axios.post('/api/registration',{
                     username: this.username,
                     password: this.password
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
-                    
+
                     me.$router.push({ path: '/wallets' });
                 }).catch(function () {
                     me.message="Sorry, an error has occured... Please try again";
@@ -144,7 +144,7 @@
                     password: this.password
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
-                    
+
 
                     me.$router.push({ path: '/wallets' });
                 }).catch(function () {
@@ -175,12 +175,12 @@
             <h2>Transfer Currency</h2>
             <label for="amount">Amount</label>
             <div>
-                <input id="amount" name="amount" type="number" 
+                <input id="amount" name="amount" type="number"
                 min="0.01" max="1000000" class="transfer-amount" v-model="amount"/>
             </div>
             <label for="source">Source Address</label>
             <div>
-                <select id="source" name="source" class="transfer-source" 
+                <select id="source" name="source" class="transfer-source"
                 v-model="sourceSelected">
                     <option v-for="wallet in wallets">{{ wallet.address }}</option>
                 </select>
@@ -239,51 +239,57 @@
                 });
                 /**/
                 axios.get('/api/wallets',{
-                    
+
                     auth: {
                         password: sessionStorage.getItem('token')
                     }
-                    
+
                 }).then(function(response){
-                    
+
                     me.network = response.data.filter(function (w) {
                     return !me.wallets.find(function (myWallet) {
                         return myWallet.address === w.address;
                             });
                     });
-                    
-                    
-                    
+
+
+
                 });
-                
-                
-                
+
+
+
             },
             confirmTransfer: function () {
                 var me = this;
                 source = this.sourceSelected;
                 destination = this.destinationSelected;
                 amount = this.amount;
-                
-                
 
-                
-                
-                
-                axios.post('/api/transactions', 
-                    {source:source,destination:destination,amount:amount}, 
+
+
+
+
+
+                axios.post('/api/transactions',
+                    {source:source,destination:destination,amount:amount},
                     {
                         auth: {
                             password:sessionStorage.getItem('token')
                         }
-                    
-                        
+
+
                 }).then(function (response) {
-                    this.loadData();
-                    this.transferButton="Transferred!";
-                    setTimeout(() => {this.transferButton="Transfer"; this.loadData(); },2000);    
+                    me.loadData();
+                    me.transferButton="Transferred!";
+
+                    setTimeout(() => {
+                        me.transferButton="Transfer";
+                      me.sourceSelected = null;
+                      me.destinationSelected = null;
+                      me.amount = null;
+                    },2000);
                 });
-                
+
             }
             /**/
         }
@@ -369,7 +375,7 @@
                     }
                 }).then(function (response) {
                     me.wallets = response.data;
-                    
+
                 });
             }
         }
