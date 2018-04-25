@@ -8,9 +8,12 @@ module.exports = (app, data) => {
      * Authenticate API requests.
      */
     app.use(async (ctx, next) => {
-        if (ctx.path.startsWith("/api") && !ctx.path.startsWith("/api/login")) {
+        
+        if (ctx.path.startsWith("/api") && 
+        !ctx.path.startsWith("/api/login") &&
+        !ctx.path.startsWith("/api/registration")) {
             let credentials = BasicAuth(ctx.req);
-
+            
             if (credentials && credentials.pass) {
                 let user = data.getUserForAccessToken(credentials.pass);
 
@@ -28,6 +31,49 @@ module.exports = (app, data) => {
             await next();
         }
     });
+    /* 
+       POST /api/registration 
+     */
+    router.post('/api/registration', async ctx => {
+        let username=ctx.request.body.username;
+        let password=ctx.request.body.password;
+        
+        
+        if(!username || !password){
+            console.log(`Invalid Username or Password`);
+            ctx.throw(400);
+            
+        }
+        
+        
+        else if(data.users.find(x => x.username===username)){
+            console.log(`User ${username} already exists`);
+            ctx.throw(409);
+        }
+
+        
+        else {
+            let user = {
+                id:data.users.length+1,
+                username:username,
+                password:password,
+                wallets:[data.createNewWallet()]
+            };
+            data.users.push(user);
+            let wallet={address:user.wallets[0],balance:10};
+            data.wallets.push(wallet);
+            ctx.body = {
+                token: data.getOrCreateAccessToken(user.id),
+                username: user.username,
+                wallets: user.wallets
+            };
+            console.log(`Welcome ${username}`);
+            
+        }
+        
+    });
+
+
 
     /**
      * POST /api/login
@@ -99,7 +145,8 @@ module.exports = (app, data) => {
         let transaction = ctx.request.body;
         let sourceWallet = data.getWalletByAddress(transaction.source);
         let destinationWallet = data.getWalletByAddress(transaction.destination);
-        let amount = transaction.amount;
+        let amount = Number(transaction.amount);
+        
 
         if (!sourceWallet) {
             ctx.throw(400, "Source address is invalid!");
@@ -112,7 +159,7 @@ module.exports = (app, data) => {
         } else if (amount <= 0 || amount > 1000000) {
             ctx.throw(400, "Amount is outside the acceptable range!");
         } else {
-            ctx.body = await data.processTransaction(transaction.source, transaction.destination, transaction.amount);
+            ctx.body = await data.processTransaction(transaction.source, transaction.destination, Number(transaction.amount));
         }
     });
 

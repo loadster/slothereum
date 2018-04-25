@@ -1,3 +1,4 @@
+
 <html>
 <head>
     <title>Slothereum Crypto Exchange</title>
@@ -65,7 +66,7 @@
             </div>
             <label for="registration-password">Password</label>
             <div>
-                <input id="registration-password" name="password" type="password" v-model="password"/>
+                <input id="registration-password" name="password" type="password" v-model="password" v-on:keyup.13="submit"/>
             </div>
             <div>
                 <input type="button" value="Register" v-on:click="submit"/>
@@ -86,7 +87,18 @@
         },
         methods: {
             submit: function () {
+                let me =this;
 
+                axios.post('/api/registration',{
+                    username: this.username,
+                    password: this.password
+                }).then(function (response) {
+                    sessionStorage.setItem('token', response.data.token);
+
+                    me.$router.push({ path: '/wallets' });
+                }).catch(function () {
+                    me.message="Sorry, an error has occured... Please try again";
+                });
             }
         }
     };
@@ -104,7 +116,7 @@
             </div>
             <label for="login-password">Password</label>
             <div>
-                <input id="login-password" name="password" type="password" v-model="password"/>
+                <input id="login-password" name="password" type="password" v-model="password" v-on:keyup.13="submit"/>
             </div>
             <div>
                 <input type="button" value="Sign In" v-on:click="submit"/>
@@ -132,6 +144,7 @@
                     password: this.password
                 }).then(function (response) {
                     sessionStorage.setItem('token', response.data.token);
+
 
                     me.$router.push({ path: '/wallets' });
                 }).catch(function () {
@@ -162,19 +175,26 @@
             <h2>Transfer Currency</h2>
             <label for="amount">Amount</label>
             <div>
-                <input id="amount" name="amount" type="number" min="0.01" max="1000000" class="transfer-amount"/>
+                <input id="amount" name="amount" type="number"
+                min="0.01" max="1000000" class="transfer-amount" v-model="amount"/>
             </div>
             <label for="source">Source Address</label>
             <div>
-                <select id="source" name="source" class="transfer-source">
+                <select id="source" name="source" class="transfer-source"
+                v-model="sourceSelected">
                     <option v-for="wallet in wallets">{{ wallet.address }}</option>
                 </select>
             </div>
             <label for="destination">Destination Address</label>
             <div>
-                <select id="destination" name="destination" class="transfer-destination">
-                    <option v-for="wallet in wallets">{{ wallet.address }}</option>
+                <select id="destination" name="destination" class="transfer-destination" v-model="destinationSelected">
+                    <!-- -->
+                    <option v-for="wallet in network">{{ wallet.address }}</option>
+                    <!-- -->
                 </select>
+            </div>
+            <div>
+                <input type="button" value="Transfer" v-on:click="confirmTransfer" v-model="transferButton"/>
             </div>
         </div>
         <div class="footer">
@@ -189,7 +209,15 @@
         data: function () {
             return {
                 loading: false,
-                wallets: []
+                wallets: [],
+                /**/
+                network: [],
+                sourceSelected: '',
+                destinationSelected: '',
+                amount: 0,
+                transferButton:"Transfer"
+
+                /**/
             }
         },
         created: function () {
@@ -209,7 +237,61 @@
                     me.wallets = response.data;
                     me.loading = false;
                 });
+                /**/
+                axios.get('/api/wallets',{
+
+                    auth: {
+                        password: sessionStorage.getItem('token')
+                    }
+
+                }).then(function(response){
+
+                    me.network = response.data.filter(function (w) {
+                    return !me.wallets.find(function (myWallet) {
+                        return myWallet.address === w.address;
+                            });
+                    });
+
+
+
+                });
+
+
+
+            },
+            confirmTransfer: function () {
+                var me = this;
+                source = this.sourceSelected;
+                destination = this.destinationSelected;
+                amount = this.amount;
+
+
+
+
+
+
+                axios.post('/api/transactions',
+                    {source:source,destination:destination,amount:amount},
+                    {
+                        auth: {
+                            password:sessionStorage.getItem('token')
+                        }
+
+
+                }).then(function (response) {
+                    me.loadData();
+                    me.transferButton="Transferred!";
+
+                    setTimeout(() => {
+                        me.transferButton="Transfer";
+                      me.sourceSelected = null;
+                      me.destinationSelected = null;
+                      me.amount = null;
+                    },2000);
+                });
+
             }
+            /**/
         }
     };
 
@@ -285,6 +367,16 @@
                 sessionStorage.removeItem('token');
             },
             refreshWallets: () => {
+                var me = this;
+
+                axios.get('/api/wallets/mine', {
+                    auth: {
+                        password: sessionStorage.getItem('token')
+                    }
+                }).then(function (response) {
+                    me.wallets = response.data;
+
+                });
             }
         }
     });

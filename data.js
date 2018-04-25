@@ -36,7 +36,23 @@ const data = {
         }
     ]
 };
+data.createNewWallet = () => {
+    generateRandomWalletId = () => {
+        return Math.random().toString(16).substring(9);
+    }
+     
+    checkIfWalletIdIsTaken = (address) => {
+        return data.wallets.find(wallet => wallet.address===address);
+        }
+    let x = generateRandomWalletId();
+    if(!checkIfWalletIdIsTaken(x)) {
+        return x;
+    } else {
+        data.createNewWallet();
+    }
 
+
+}
 data.listWalletsForUser = (userId) => {
     let user = data.getUserById(userId);
 
