@@ -8,6 +8,6 @@ const api = require('./api.js')(app, data);
 
 app.use(KoaBodyParser());
 app.use(api.routes());
-app.use(KoaStatic('static', {}));
+app.use(KoaStatic(__dirname +  '/../frontend', {}));
 
 app.listen(3000);

@@ -10,49 +10,47 @@ const data = {
     users: [
         {
             id: 1,
-            username: "user1@slothereum.cc",
-            password: "secret",
-            wallets: ["a6b92a"]
+            username: 'user1@slothereum.cc',
+            password: 'secret',
+            wallets: ['a6b92a']
         },
         {
             id: 2,
-            username: "user2@slothereum.cc",
-            password: "secret",
-            wallets: ["b3b40f", "cab954"]
+            username: 'user2@slothereum.cc',
+            password: 'secret',
+            wallets: ['b3b40f', 'cab954']
         }
     ],
     wallets: [
         {
-            address: "a6b92a",
+            address: 'a6b92a',
             balance: 30
         },
         {
-            address: "b3b40f",
+            address: 'b3b40f',
             balance: 50
         },
         {
-            address: "cab954",
+            address: 'cab954',
             balance: 10
         }
     ]
 };
 data.createNewWallet = () => {
-    generateRandomWalletId = () => {
+    let generateRandomWalletId = () => {
         return Math.random().toString(16).substring(9);
-    }
-     
-    checkIfWalletIdIsTaken = (address) => {
-        return data.wallets.find(wallet => wallet.address===address);
-        }
+    };
+
+    let checkIfWalletIdIsTaken = (address) => {
+        return data.wallets.find(wallet => wallet.address === address);
+    };
     let x = generateRandomWalletId();
-    if(!checkIfWalletIdIsTaken(x)) {
+    if (!checkIfWalletIdIsTaken(x)) {
         return x;
     } else {
         data.createNewWallet();
     }
-
-
-}
+};
 data.listWalletsForUser = (userId) => {
     let user = data.getUserById(userId);
 
