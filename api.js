@@ -31,6 +31,7 @@ module.exports = (app, data) => {
             await next();
         }
     });
+    
     /* 
        POST /api/registration 
      */

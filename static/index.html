@@ -112,7 +112,7 @@
         <label for="login-username">Email</label>
         <form>
             <div>
-                <input id="login-username" name="username" v-model="username"/>
+                <input id="login-username" name="username" v-model="username" autofocus="autofocus"/>
             </div>
             <label for="login-password">Password</label>
             <div>
@@ -135,6 +135,7 @@
                 message: "Please sign in to access your Slothereum wallet."
             };
         },
+        
         methods: {
             submit: function () {
                 var me = this;
@@ -315,19 +316,75 @@
         router: new VueRouter({
             routes: [
                 {
-                    path: '/', component: HomeComponent
+                    path: '/', component: HomeComponent,
+                    beforeEnter: (to,from,next) => {
+                        axios.get('/api/wallets/mine',{
+                            auth: {
+                                password:sessionStorage.getItem('token')
+                            }
+                        }).then(function(response) {
+                            next('/wallets')
+
+                        }).catch(function(){
+                            next()
+                        });
+                        
+                    }
                 },
                 {
-                    path: '/registration', component: RegistrationComponent
+                    path: '/registration', component: RegistrationComponent,
+                    beforeEnter: (to,from,next) => {
+                        axios.get('/api/wallets/mine',{
+                            auth: {
+                                password:sessionStorage.getItem('token')
+                            }
+                        }).then(function(response) {
+                            next('/wallets')
+
+                        }).catch(function(){
+                            next()
+                        });
+                        
+                    }
                 },
                 {
-                    path: '/login', component: LoginComponent
+                    path: '/login', component: LoginComponent,
+                    beforeEnter: (to,from,next) => {
+                        axios.get('/api/wallets/mine',{
+                            auth: {
+                                password:sessionStorage.getItem('token')
+                            }
+                        }).then(function(response) {
+                            next('/wallets')
+
+                        }).catch(function(){
+                            next()
+                        });
+                        
+                    }
+                    
                 },
                 {
                     path: '/logout', component: LogoutComponent
                 },
                 {
-                    path: '/wallets', component: WalletsComponent
+                    path: '/wallets', component: WalletsComponent,
+                    beforeEnter: (to,from,next) => {
+                        axios.get('/api/wallets/mine',{
+                            auth: {
+                                password:sessionStorage.getItem('token')
+                            }
+                        }).then(function(response) {
+                            if(response.status===200){
+                                next()
+                            } else {
+                                next('/')
+
+                            }
+
+                        });
+                        
+                    }
                 }
             ]
         }),
