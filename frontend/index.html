@@ -331,10 +331,12 @@
                 if(response.status===200){
                     next()
                 } else {
-                    next('/')
+                    
     
                 }
     
+            }).catch(function() {
+                next('/')
             });
                             
             }
