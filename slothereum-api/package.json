@@ -1,10 +1,10 @@
 {
-  "name": "slothereum",
+  "name": "slothereum-api",
   "version": "1.0.0",
-  "description": "Slothereum Crypto Exchange",
-  "main": "index.js",
+  "description": "Slothereum Crypto Exchange API",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node backend/index.js",
+    "start": "node src/index.js",
     "lint": "eslint --ext .js *.js static/",
     "lintfix": "eslint --ext .js *.js static/ --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +17,7 @@
   "author": "Andy Hawkes <andy@andyhawkes.com>",
   "license": "MIT",
   "dependencies": {
+    "@koa/cors": "^2.2.2",
     "basic-auth": "^2.0.0",
     "koa": "^2.5.0",
     "koa-body": "^2.5.0",

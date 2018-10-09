@@ -1,0 +1,136 @@
+/**
+ * #211a15
+ * #61e2d6
+ * #edcb34
+ */
+html, body {
+  background: #211a15;
+  font-family: Futura, Arial, sans-serif;
+  color: #f1eae5;
+  font-weight: 300;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Futura, Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 300;
+  margin: 30px 0 15px 0;
+}
+
+input, select, button {
+  width: 100%;
+  font-size: 18px;
+  margin: 0 0 20px 0;
+  padding: 10px 5px;
+  height: 50px;
+  border-radius: 4px;
+  border: 2px solid #61e2d6;
+  color: #61e2d6;
+  background: none;
+  outline: none;
+}
+
+input[type=submit], input[type=button], button {
+  font-size: 20px;
+  border-radius: 25px;
+  line-height: 16px;
+  height: 50px;
+  cursor: pointer;
+  transition: background linear 80ms;
+}
+
+input[type=submit]:hover, input[type=button]:hover, button:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+input.transfer-amount {
+  width: 80px;
+}
+
+select.transfer-source, select.transfer-destination {
+  width: 150px;
+}
+
+a, a:link, a:hover, a:visited {
+  color: #61e2d6;
+  text-decoration: none;
+}
+
+#logo {
+  margin: 20px 0;
+  text-align: center;
+}
+
+#app {
+  width: 350px;
+  margin: 0 auto;
+}
+
+.message {
+  margin: 20px 0;
+}
+
+.wallets {
+
+}
+
+.wallet {
+  border-radius: 5px;
+  background: #bbaa88;
+  max-width: 300px;
+  margin: 0 auto;
+  width: 300px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet .balance {
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  top: 10px;
+  height: 60px;
+  background: #77dd77;
+  font-size: 24px;
+  text-align: center;
+  line-height: 60px;
+  border: 7px solid #99ff99;
+}
+
+.wallet .address {
+  height: 130px;
+  border-top: 1px solid #bbaa88;
+  background: #ddccaa;
+  position: absolute;
+  line-height: 130px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+}
+
+.transfer {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.buttons {
+  margin: 40px auto;
+}
+
+.footer {
+  margin: 30px 0;
+  text-align: center;
+}
+
