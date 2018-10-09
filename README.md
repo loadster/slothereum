@@ -1,39 +1,44 @@
-# slothereum
+# Slothereum
 
-This is a demo application for the [Loadster](https://www.loadsterperformance.com) tutorials.
+This is a demo application for the [Loadster](https://loadster.app) tutorials.
 
-To install the npm dependencies:
+It's a spoof cryptocurrency exchange, that professes to use the blockchain
+in some vague hand-wavy kind of way... but peek under the covers and 
+you'll discover the truth!
+
+The demo app has two parts: an API and a Vue SPA.
+
+## Running the API
+
+The API is in the `slothereum-api` subdirectory.
+
+To install the npm dependencies and run it:
 
 ```
+$ cd slothereum-api
 $ npm install
-```
-
-To run the server:
-
-```
 $ npm start
 ```
 
-To open it in your browser, go to http://localhost:3000.
+## Running the Web App
 
-## Development
+The web app is in the `slothereum-web` subdirectory.
 
-The project source is broken into two directories: `backend` and `frontend`.
+To install the npm dependencies and run it:
 
-The backend is an Express server with an in-memory data store and several API endpoints.
-The Express server also serves up static content for the front end.
+```
+$ cd slothereum-web
+$ npm install
+$ npm run serve
+```
 
-The frontend is HTML + VueJS. The Vue components are embedded in the index.html file as x-templates.
-If this were a larger project we might have a build/uglification pipeline but we have so far resisted the temptation.
+To open it in your browser, go to http://localhost:5001.
 
-Before committing, please run the linter to be apprised of inconsistent formatting or possible bugs:
+## Contributions
+
+If you wish to contribute to this sillly demo app, please run the linter
+first and address inconsistent formatting or possible bugs:
 
 ```
 $ npm run lint
-```
-
-To automatically fix any fixable linting issues:
-
-```
-$ npm run lintfix
 ```
