@@ -8,9 +8,7 @@ module.exports = (app, data) => {
    * Authenticate API requests.
    */
   app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/api') &&
-      !ctx.path.startsWith('/api/login') &&
-      !ctx.path.startsWith('/api/registration')) {
+    if (!ctx.path.startsWith('/login') && !ctx.path.startsWith('/registration')) {
       let credentials = BasicAuth(ctx.req);
 
       if (credentials && credentials.pass) {
@@ -32,9 +30,9 @@ module.exports = (app, data) => {
   });
 
   /**
-   * POST /api/registration
+   * POST /registration
    */
-  router.post('/api/registration', async ctx => {
+  router.post('/registration', async ctx => {
     let username = ctx.request.body.username;
     let password = ctx.request.body.password;
 
@@ -45,16 +43,18 @@ module.exports = (app, data) => {
       console.log(`User ${username} already exists`);
       ctx.throw(409);
     } else {
+      let id = data.users.length + 1;
       let user = {
-        id: data.users.length + 1,
+        id: id,
         username: username,
         password: password,
-        wallets: [data.createNewWallet()]
+        wallets: [data.createNewWallet(id)]
       };
       data.users.push(user);
-      let wallet = {address: user.wallets[0], balance: 10};
+      let wallet = {owner: user.id, address: user.wallets[0], balance: 10};
       data.wallets.push(wallet);
       ctx.body = {
+        id: user.id,
         token: data.getOrCreateAccessToken(user.id),
         username: user.username,
         wallets: user.wallets
@@ -64,9 +64,9 @@ module.exports = (app, data) => {
   });
 
   /**
-   * POST /api/login
+   * POST /login
    */
-  router.post('/api/login', async ctx => {
+  router.post('/login', async ctx => {
     let username = ctx.request.body.username;
     let password = ctx.request.body.password;
     let user = data.users.find(user => {
@@ -77,6 +77,7 @@ module.exports = (app, data) => {
       console.log(`Logging in user ${JSON.stringify(user)}`);
 
       ctx.body = {
+        id: user.id,
         token: data.getOrCreateAccessToken(user.id),
         username: user.username,
         wallets: user.wallets
@@ -89,29 +90,20 @@ module.exports = (app, data) => {
   });
 
   /**
-   * GET /api/wallets
+   * GET /wallets
    *
    * Lists all wallets in the Slothereum network.
    */
-  router.get('/api/wallets', async ctx => {
+  router.get('/wallets', async ctx => {
     ctx.body = data.wallets;
   });
 
   /**
-   * GET /api/wallets/mine
-   *
-   * Retrieve the wallet of the current user.
-   */
-  router.get('/api/wallets/mine', async ctx => {
-    ctx.body = data.listWalletsForUser(ctx.user.id);
-  });
-
-  /**
-   * GET /api/wallets/:address
+   * GET /wallets/:address
    *
    * Retrieve a wallet by address (yep, wallets are world readable).
    */
-  router.get('/api/wallets/:address', async ctx => {
+  router.get('/wallets/:address', async ctx => {
     let address = ctx.params.address;
     let wallet = data.wallets.find(wallet => {
       return wallet.address === address;
@@ -125,11 +117,11 @@ module.exports = (app, data) => {
   });
 
   /**
-   * POST /api/transactions
+   * POST /transactions
    *
    * Creates a transaction to transfer money from one wallet to another.
    */
-  router.post('/api/transactions', async ctx => {
+  router.post('/transactions', async ctx => {
     let transaction = ctx.request.body;
     let sourceWallet = data.getWalletByAddress(transaction.source);
     let destinationWallet = data.getWalletByAddress(transaction.destination);

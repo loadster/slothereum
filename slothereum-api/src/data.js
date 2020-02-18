@@ -23,20 +23,24 @@ const data = {
   ],
   wallets: [
     {
+      owner: 1,
       address: 'a6b92a',
-      balance: 30
+      balance: 300
     },
     {
+      owner: 2,
       address: 'b3b40f',
-      balance: 50
+      balance: 500
     },
     {
+      owner: 2,
       address: 'cab954',
-      balance: 10
+      balance: 100
     }
   ]
 };
-data.createNewWallet = () => {
+
+data.createNewWallet = (owner) => {
   let generateRandomWalletId = () => {
     return Math.random().toString(16).substring(9);
   };
@@ -44,13 +48,16 @@ data.createNewWallet = () => {
   let checkIfWalletIdIsTaken = (address) => {
     return data.wallets.find(wallet => wallet.address === address);
   };
-  let x = generateRandomWalletId();
+
+  let x = generateRandomWalletId(owner);
+
   if (!checkIfWalletIdIsTaken(x)) {
     return x;
   } else {
-    data.createNewWallet();
+    data.createNewWallet(owner);
   }
 };
+
 data.listWalletsForUser = (userId) => {
   let user = data.getUserById(userId);
 
