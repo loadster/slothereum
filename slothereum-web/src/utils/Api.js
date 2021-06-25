@@ -1,9 +1,14 @@
 import Axios from 'axios'
 
 const options = () => {
+  let token = sessionStorage.getItem('token') || ''
+
+  console.log('token: ' + token)
+
   return {
     auth: {
-      password: sessionStorage.getItem('token')
+      username: token,
+      password: token
     }
   }
 }
@@ -28,13 +33,13 @@ export default {
   },
 
   async listMyWallets () {
-    let response = await Axios.get(`${process.env.VUE_APP_API_BASE}/api/wallets/mine`, options())
+    let response = await Axios.get(`${process.env.VUE_APP_API_BASE}/api/wallets?mine=true&friends=false`, options())
 
     return response.data
   },
 
   async listOtherWallets () {
-    let response = await Axios.get(`${process.env.VUE_APP_API_BASE}/api/wallets`, options())
+    let response = await Axios.get(`${process.env.VUE_APP_API_BASE}/api/wallets?mine=false&friends=true`, options())
 
     return response.data
   },

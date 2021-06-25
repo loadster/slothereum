@@ -12,6 +12,6 @@ const api = require('./api.js')(app, data);
 
 app.use(KoaBodyParser());
 app.use(api.routes());
-app.use(KoaStatic(__dirname +  '/../frontend', {}));
+app.use(KoaStatic(__dirname +  '/../../slothereum-web/dist', {}));
 
 app.listen(5000);

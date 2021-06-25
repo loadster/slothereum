@@ -8,7 +8,7 @@ module.exports = (app, data) => {
    * Authenticate API requests.
    */
   app.use(async (ctx, next) => {
-    if (!ctx.path.startsWith('/login') && !ctx.path.startsWith('/registration')) {
+    if (ctx.path.startsWith('/api') && !ctx.path.startsWith('/api/login') && !ctx.path.startsWith('/api/registration')) {
       let credentials = BasicAuth(ctx.req);
 
       if (credentials && credentials.pass) {
@@ -32,7 +32,7 @@ module.exports = (app, data) => {
   /**
    * POST /registration
    */
-  router.post('/registration', async ctx => {
+  router.post('/api/registration', async ctx => {
     let username = ctx.request.body.username;
     let password = ctx.request.body.password;
 
@@ -66,7 +66,7 @@ module.exports = (app, data) => {
   /**
    * POST /login
    */
-  router.post('/login', async ctx => {
+  router.post('/api/login', async ctx => {
     let username = ctx.request.body.username;
     let password = ctx.request.body.password;
     let user = data.users.find(user => {
@@ -94,8 +94,23 @@ module.exports = (app, data) => {
    *
    * Lists all wallets in the Slothereum network.
    */
-  router.get('/wallets', async ctx => {
-    ctx.body = data.wallets;
+  router.get('/api/wallets', async ctx => {
+    let user = ctx.user;
+    let mine = (ctx.query.mine === 'true');
+    let friends = (ctx.query.friends === 'true');
+
+    console.log('mine: ' + mine);
+    console.log('friends: ' + friends);
+
+    ctx.body = data.wallets.filter(w => {
+      if (mine && w.owner === user.id) {
+        return true;
+      } else if (friends && w.owner !== user.id) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   });
 
   /**
@@ -103,7 +118,7 @@ module.exports = (app, data) => {
    *
    * Retrieve a wallet by address (yep, wallets are world readable).
    */
-  router.get('/wallets/:address', async ctx => {
+  router.get('/api/wallets/:address', async ctx => {
     let address = ctx.params.address;
     let wallet = data.wallets.find(wallet => {
       return wallet.address === address;
@@ -121,7 +136,7 @@ module.exports = (app, data) => {
    *
    * Creates a transaction to transfer money from one wallet to another.
    */
-  router.post('/transactions', async ctx => {
+  router.post('/api/transactions', async ctx => {
     let transaction = ctx.request.body;
     let sourceWallet = data.getWalletByAddress(transaction.source);
     let destinationWallet = data.getWalletByAddress(transaction.destination);
