@@ -3,8 +3,6 @@ import Axios from 'axios'
 const options = () => {
   let token = sessionStorage.getItem('token') || ''
 
-  console.log('token: ' + token)
-
   return {
     auth: {
       username: token,
